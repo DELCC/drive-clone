@@ -8,14 +8,14 @@ import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_API_KEY_FIREBASE,
-  authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAINE_FIREBASE,
-  projectId: process.env.NEXT_PUBLIC_PROJECT_ID_FIREBASE,
-  storageBucket: process.env.NEXT_PUBLIC_STORAGE_BUCKET_FIREBASE,
-  messagingSenderId: process.env.NEXT_PUBLIC_MESSAGING_SENDER_ID_FIREBASE,
-  appId: process.env.NEXT_PUBLIC_APP_ID_FIREBASE,
+  apiKey: process.env.REACT_APP_API_KEY_FIREBASE,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN_FIREBASE,
+  projectId: process.env.REACT_APP_PROJECT_ID_FIREBASE,
+  storageBucket: process.env.REACT_APP_STORAGE_BUCKET_FIREBASE,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID_FIREBASE,
+  appId: process.env.REACT_APP_APP_ID_FIREBASE,
 };
-
+console.log("FIREBASE ENV =", firebaseConfig);
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const storage = getStorage(app);
