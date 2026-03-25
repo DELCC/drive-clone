@@ -1,0 +1,16 @@
+.signin-container {
+  height: 90vh;
+}
+
+.image-auth {
+  object-fit: contain;
+  height: 100px;
+  width: 100px;
+}
+
+.header-signin {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}

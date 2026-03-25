@@ -1,0 +1,13 @@
+.profile {
+  width: 100vw;
+}
+
+.main-profile {
+  padding-top: 5px;
+  padding-right: 5px;
+  padding-left: 5px;
+  padding-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

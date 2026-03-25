@@ -1,0 +1,50 @@
+.left_sidebar {
+  /* flex: 1 1 0; */
+  height: 80vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.icon {
+  font-size: 56px !important;
+  color: black;
+  margin-bottom: 16px;
+}
+
+/* .modal_bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+} */
+
+/* .upload_button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} */
+
+.top_left_sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.bottom_left_sidebar {
+  margin-top: auto;
+  padding-bottom: 20px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu_items {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
