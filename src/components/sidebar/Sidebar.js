@@ -1,24 +1,42 @@
 import React from "react";
 import Fab from "@mui/material/Fab";
-
 import Button from "@mui/material/Button";
 import { storage } from "../../firebase/config";
 import { ref } from "firebase/storage";
 import AddIcon from "@mui/icons-material/Add";
+import UpgradeIcon from "@mui/icons-material/WorkspacePremium";
 import ModalUpload from "../ui/ModalUpload";
 import MenuItem from "../ui/MenuItem";
 import { useState, useEffect } from "react";
 import { Gauge } from "@mui/x-charts/Gauge";
+import { useNavigate } from "react-router-dom";
 import "./sidebar.css";
 import { getMetadata, listAll } from "firebase/storage";
 import { useSelector } from "react-redux";
 
-const Sidebar = ({ selectedMenuItem, setSelectedMenuItem }) => {
+// Quota du plan gratuit : 1 Go
+const MAX_STORAGE_BYTES = 1 * 1024 * 1024 * 1024;
+
+// Octets -> "342 Mo" / "1.20 Go" pour un affichage lisible
+const formatBytes = (bytes) => {
+  if (!bytes || bytes < 0) return "0 Mo";
+  const mo = bytes / (1024 * 1024);
+  if (mo < 1024) return `${Math.round(mo)} Mo`;
+  return `${(mo / 1024).toFixed(2)} Go`;
+};
+
+const Sidebar = ({
+  selectedMenuItem,
+  setSelectedMenuItem,
+  storageVersion,
+}) => {
   const [open, setOpen] = useState(false);
+  const [totalSize, setTotalSize] = useState(0);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const user = useSelector((state) => state.user.value);
+  const navigate = useNavigate();
 
   const folderNames = ["Documents", "Images", "Videos"];
   useEffect(() => {
@@ -26,7 +44,7 @@ const Sidebar = ({ selectedMenuItem, setSelectedMenuItem }) => {
 
     const getTotalStorageSize = async () => {
       try {
-        let totalSize = 0;
+        let total = 0;
 
         for (const folder of folderNames) {
           const folderRef = ref(storage, `${user.id}/${folder}/`);
@@ -42,26 +60,30 @@ const Sidebar = ({ selectedMenuItem, setSelectedMenuItem }) => {
             }),
           );
 
-          totalSize += sizes.reduce((acc, val) => acc + val, 0);
+          total += sizes.reduce((acc, val) => acc + val, 0);
         }
 
-        console.log("Total storage size (bytes):", totalSize);
+        setTotalSize(total);
       } catch (error) {
         console.error(error);
       }
     };
 
     getTotalStorageSize();
-  }, [user]);
+  }, [user, storageVersion]);
+
+  // % d'occupation du quota, borné à 100
+  const usagePercent = Math.min(
+    100,
+    Math.round((totalSize / MAX_STORAGE_BYTES) * 100),
+  );
   return (
     <div className="left_sidebar">
       <div className="top_left_sidebar">
-        <Button onClick={handleOpen} sx={{ px: 0.5, py: 0.5 }}>
-          <Fab variant="extended">
-            <AddIcon sx={{ mr: 1 }} />
-            New
-          </Fab>
-        </Button>
+        <Fab variant="extended" color="primary" onClick={handleOpen}>
+          <AddIcon sx={{ mr: 1 }} />
+          New
+        </Fab>
         <ModalUpload open={open} handleClose={handleClose} />
 
         <div className="menu_items">
@@ -72,18 +94,33 @@ const Sidebar = ({ selectedMenuItem, setSelectedMenuItem }) => {
         </div>
       </div>
       <div className="bottom_left_sidebar">
+        <span className="storage_label">Stockage</span>
         <Gauge
-          width={100}
-          height={100}
-          value={60}
+          width={110}
+          height={90}
+          value={usagePercent}
           startAngle={-90}
           endAngle={90}
+          text={`${usagePercent}%`}
           sx={{
-            "& text": {
-              display: "none",
+            "& .MuiGauge-valueText": {
+              fontSize: 16,
+              transform: "translateY(-8px)",
             },
           }}
         />
+        <span className="storage_usage">
+          {formatBytes(totalSize)} sur {formatBytes(MAX_STORAGE_BYTES)}
+        </span>
+        <Button
+          variant="outlined"
+          size="small"
+          startIcon={<UpgradeIcon />}
+          onClick={() => navigate("/profile", { state: { tab: 1 } })}
+          sx={{ mt: 1, textTransform: "none", borderRadius: 2 }}
+        >
+          Upgrade Plan
+        </Button>
       </div>
     </div>
   );

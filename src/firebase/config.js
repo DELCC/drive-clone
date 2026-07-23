@@ -15,7 +15,6 @@ const firebaseConfig = {
   messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID_FIREBASE,
   appId: process.env.REACT_APP_APP_ID_FIREBASE,
 };
-console.log("FIREBASE ENV =", firebaseConfig);
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const storage = getStorage(app);

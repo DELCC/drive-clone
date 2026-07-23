@@ -34,7 +34,7 @@ const Header = () => {
   const onClickLogOut = async () => {
     await signOut(auth);
     dispatch(deleteUserFromStore());
-    navigate("/signin");
+    navigate("/");
   };
 
   const settings = [
@@ -50,7 +50,6 @@ const Header = () => {
   };
 
   const user = useSelector((state) => state.user.value);
-  console.log(user);
   return (
     <div className="header">
       <div className="header_left">

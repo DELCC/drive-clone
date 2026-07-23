@@ -8,7 +8,12 @@ import Box from "@mui/joy/Box";
 import { Tabs, TabPanel } from "@mui/joy";
 import TabList from "@mui/joy/TabList";
 import Tab, { tabClasses } from "@mui/joy/Tab";
+import { useLocation } from "react-router-dom";
 const Profile = () => {
+  const location = useLocation();
+  // Onglet ouvert par défaut : piloté par l'état de navigation
+  // (ex. bouton "Upgrade Plan" de la sidebar -> onglet Plan = 1)
+  const initialTab = location.state?.tab ?? 0;
   return (
     <div className="profile">
       <Header />
@@ -22,7 +27,7 @@ const Profile = () => {
               zIndex: 9995,
             }}
           >
-            <Tabs defaultValue={0} sx={{ bgcolor: "transparent" }}>
+            <Tabs defaultValue={initialTab} sx={{ bgcolor: "transparent" }}>
               <TabList
                 tabFlex={1}
                 size="sm"

@@ -81,6 +81,7 @@ export default function SignUp(props) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [authError, setAuthError] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -89,11 +90,10 @@ export default function SignUp(props) {
   };
 
   const createUserFirebase = async ({ authId, name }) => {
-    const userCreated = await addDoc(collection(db, "users"), {
+    await addDoc(collection(db, "users"), {
       authId: authId,
       name: name,
     });
-    console.log(userCreated);
   };
 
   const validateInputs = () => {
@@ -135,24 +135,18 @@ export default function SignUp(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setAuthError("");
     const isValid = validateInputs();
     if (!isValid) return;
     try {
-      const userData = {
-        name,
-        email,
-        password,
-      };
-      console.log(userData);
       const result = await createUserWithEmailAndPassword(
         auth,
-        userData.email.trim(),
-        userData.password.trim(),
+        email.trim(),
+        password.trim(),
       );
       await updateProfile(result.user, {
-        displayName: userData.name,
+        displayName: name,
       });
-      console.log(result);
       const userInfos = {
         id: result.user.uid,
         name: result.user.displayName,
@@ -164,11 +158,18 @@ export default function SignUp(props) {
       });
       navigate("/dashboard");
     } catch (error) {
-      console.log(error);
+      if (error.code === "auth/email-already-in-use") {
+        setAuthError("Un compte existe déjà avec cet email.");
+      } else if (error.code === "auth/weak-password") {
+        setAuthError("Mot de passe trop faible (6 caractères minimum).");
+      } else {
+        setAuthError("La création du compte a échoué. Réessaie.");
+      }
     }
   };
 
   const loginWithGoogle = async () => {
+    setAuthError("");
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const userInfos = {
@@ -180,7 +181,7 @@ export default function SignUp(props) {
       createUserFirebase({ authId: userInfos.id, name: userInfos.name });
       navigate("/dashboard");
     } catch (error) {
-      console.log(error);
+      setAuthError("La connexion avec Google a échoué.");
     }
   };
 
@@ -245,6 +246,11 @@ export default function SignUp(props) {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </FormControl>
+            {authError && (
+              <Typography color="error" sx={{ textAlign: "center", mt: 0.5 }}>
+                {authError}
+              </Typography>
+            )}
             <Button type="submit" fullWidth variant="contained">
               Sign up
             </Button>

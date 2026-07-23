@@ -72,6 +72,7 @@ const SignIn = () => {
   const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [authError, setAuthError] = useState("");
   //   const [open, setOpen] = useState(false);
 
   //   const handleClickOpen = () => {
@@ -118,27 +119,35 @@ const SignIn = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setAuthError("");
     const isValid = validateInputs();
     if (!isValid) return;
     try {
-      const userData = {
-        email,
-        password,
-      };
-      console.log(userData);
       const result = await signInWithEmailAndPassword(
         auth,
-        userData.email.trim(),
-        userData.password.trim(),
+        email.trim(),
+        password.trim(),
       );
-      console.log(result);
       const userSignInData = {
         id: result.user.uid,
         name: result.user.displayName,
       };
       addNewUser(userSignInData);
       navigate("/dashboard");
-    } catch (error) {}
+    } catch (error) {
+      // Firebase renvoie un code générique pour tout échec d'identifiants
+      if (
+        error.code === "auth/invalid-credential" ||
+        error.code === "auth/wrong-password" ||
+        error.code === "auth/user-not-found"
+      ) {
+        setAuthError("Email ou mot de passe incorrect.");
+      } else if (error.code === "auth/too-many-requests") {
+        setAuthError("Trop de tentatives. Réessaie plus tard.");
+      } else {
+        setAuthError("La connexion a échoué. Réessaie.");
+      }
+    }
   };
 
   const loginWithGoogle = async () => {
@@ -152,7 +161,7 @@ const SignIn = () => {
       addNewUser(userInfos);
       navigate("/dashboard");
     } catch (error) {
-      console.log(error);
+      setAuthError("La connexion avec Google a échoué.");
     }
   };
 
@@ -216,6 +225,11 @@ const SignIn = () => {
               label="Remember me"
             /> */}
             {/* <ForgotPassword open={open} handleClose={handleClose} /> */}
+            {authError && (
+              <Typography color="error" sx={{ textAlign: "center", mt: 0.5 }}>
+                {authError}
+              </Typography>
+            )}
             <Button type="submit" fullWidth variant="contained">
               Sign in
             </Button>

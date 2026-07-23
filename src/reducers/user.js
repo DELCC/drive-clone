@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   value: null,
+  authReady: false, // passe à true dès la 1ère réponse de onAuthStateChanged
 };
 
 export const userSlice = createSlice({
@@ -11,9 +12,11 @@ export const userSlice = createSlice({
   reducers: {
     addUserToStore: (state, action) => {
       state.value = action.payload;
+      state.authReady = true;
     },
     deleteUserFromStore: (state) => {
       state.value = null;
+      state.authReady = true;
     },
   },
 });

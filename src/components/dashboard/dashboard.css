@@ -1,24 +1,31 @@
 .dashboard {
   flex: 6 1 0;
-  /* height: 90vh; */
+  padding: 24px 32px;
+  overflow-y: auto;
 }
 
 .dashboard_header {
-  padding-top: 5px;
-  padding-right: 5px;
-  padding-left: 5px;
-  padding-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.dashboard_header p {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #202124;
 }
 
 .dashboard_content {
-  padding-top: 5px;
-  padding-right: 5px;
-  padding-left: 5px;
-  padding-bottom: 5px;
+  padding: 0;
 }
 
 .file_grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 12px 24px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 24px;
 }

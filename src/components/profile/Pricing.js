@@ -26,7 +26,7 @@ const plans = [
     featuresID: [1],
     active: false,
     buttonText: "Choisir Basic",
-    onClick: () => console.log("Basic"),
+    onClick: () => {}, // TODO: brancher la sélection de plan
   },
   {
     title: "Pro",
@@ -36,7 +36,7 @@ const plans = [
     featuresID: [1, 2, 3],
     active: true,
     buttonText: "Choisir Pro",
-    onClick: () => console.log("Pro"),
+    onClick: () => {}, // TODO: brancher la sélection de plan
   },
 ];
 
